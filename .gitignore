@@ -1,0 +1,17 @@
+build/
+
+*.exe
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.dylib
+
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+output.csv
