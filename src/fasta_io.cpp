@@ -9,22 +9,6 @@
 
 namespace {
 
-class InputFile {
-public:
-    explicit InputFile(const std::string& path) : stream_(path) {
-        if (!stream_) {
-            throw std::runtime_error("Could not open FASTA file: " + path);
-        }
-    }
-
-    std::ifstream& stream() noexcept {
-        return stream_;
-    }
-
-private:
-    std::ifstream stream_;
-};
-
 std::string trimCarriageReturn(std::string line) {
     if (!line.empty() && line.back() == '\r') {
         line.pop_back();
@@ -66,13 +50,16 @@ void finalizeRecord(const FastaRecord& record) {
 }  // namespace
 
 std::vector<FastaRecord> FastaReader::read(const std::string& input_path) const {
-    InputFile input(input_path);
+    std::ifstream input(input_path);
+    if(!input){
+        throw std::runtime_error("Could not open FASTA file: " + input_path);
+    }
     std::vector<FastaRecord> records;
     FastaRecord current;
     bool in_record = false;
     std::string line;
 
-    while (std::getline(input.stream(), line)) {
+    while (std::getline(input, line)) {
         line = trimCarriageReturn(std::move(line));
         if (line.empty()) {
             continue;
