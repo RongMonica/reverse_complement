@@ -7,22 +7,6 @@
 
 namespace {
 
-class OutputFile {
-public:
-    explicit OutputFile(const std::string& path) : stream_(path) {
-        if (!stream_) {
-            throw std::runtime_error("Could not create CSV file: " + path);
-        }
-    }
-
-    std::ofstream& stream() noexcept {
-        return stream_;
-    }
-
-private:
-    std::ofstream stream_;
-};
-
 std::string escapeCsv(std::string_view value) {
     bool needs_quotes = false;
     std::string escaped;
@@ -50,9 +34,10 @@ std::string escapeCsv(std::string_view value) {
 }  // namespace
 
 void CsvWriter::write(const std::string& output_path, const std::vector<SequenceResult>& results) const {
-    OutputFile output(output_path);
-    auto& stream = output.stream();
-
+    std::ofstream stream(output_path);
+    if(!stream) {
+        throw std::runtime_error("Failed to open output file: " + output_path);
+    }    
     stream << "sequence_id,description,length,original_sequence,reverse_complement\n";
 
     for (const auto& result : results) {
