@@ -12,4 +12,5 @@ struct SequenceResult {
     FastaRecord record;
     std::string reverse_complement;
     std::string gc_content;
+    int ambigous_base_count;
 };

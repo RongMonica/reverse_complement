@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <thread>
 #include <utility>
+#include <unordered_set>
 
 namespace {
 
@@ -53,9 +54,20 @@ std::string percentGC(std::string_view sequence){
         char upper = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
         if(upper == 'G' || upper == 'C') cnt++;
     }
-    return std::to_string((cnt * 100) / sequence.size()) + "%";
+    std::string res = std::to_string((cnt * 100) / sequence.size()) + "%";
+    return res;
 }
 
+int ambigous_base_count(std::string_view sequence){
+    std::unordered_set<char> ambigous_base = {'N', 'R', 'Y', 'W', 'S', 'K', 'M', 'B', 'D', 'H', 'V'};
+    int cnt = 0;
+    for(char c : sequence){
+        char upper = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+        if(ambigous_base.count(upper)) cnt++;
+    }
+    return cnt;
+}
+ 
 std::size_t chooseWorkerCount(std::size_t task_count) {
     const std::size_t available = std::max<std::size_t>(1, std::thread::hardware_concurrency());
     return std::min(task_count, available);
@@ -74,7 +86,8 @@ std::vector<SequenceResult> processChunk(
         chunk.push_back(SequenceResult{
             records[index],
             reverse_complementer(records[index].sequence),
-            percentGC(records[index].sequence)
+            percentGC(records[index].sequence),
+            ambigous_base_count(records[index].sequence)
         });
     }
 
