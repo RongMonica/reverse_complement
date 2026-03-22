@@ -46,6 +46,16 @@ char complementBase(char base) {
     return complement;
 }
 
+int percentGC(std::string_view sequence){
+    if(sequence.empty()) return 0;
+    int cnt = 0;
+    for(char c : sequence){
+        char upper = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+        if(upper == 'G' || upper == 'C') cnt++;
+    }
+    return (cnt * 100) / sequence.size();
+}
+
 std::size_t chooseWorkerCount(std::size_t task_count) {
     const std::size_t available = std::max<std::size_t>(1, std::thread::hardware_concurrency());
     return std::min(task_count, available);
