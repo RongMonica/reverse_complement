@@ -38,13 +38,14 @@ void CsvWriter::write(const std::string& output_path, const std::vector<Sequence
     if(!stream) {
         throw std::runtime_error("Failed to open output file: " + output_path);
     }    
-    stream << "sequence_id,description,length,GC content,original_sequence,reverse_complement\n";
+    stream << "sequence_id,description,length,GC content,ambigous base count, original_sequence,reverse_complement\n";
 
     for (const auto& result : results) {
         stream << escapeCsv(result.record.id) << ','
                << escapeCsv(result.record.description) << ','
                << result.record.sequence.size() << ','
                << result.gc_content << ','
+               << result.ambigous_base_count << ','
                << escapeCsv(result.record.sequence) << ','
                << escapeCsv(result.reverse_complement) << '\n';
     }
