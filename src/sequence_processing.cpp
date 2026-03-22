@@ -46,14 +46,14 @@ char complementBase(char base) {
     return complement;
 }
 
-int percentGC(std::string_view sequence){
+std::string percentGC(std::string_view sequence){
     if(sequence.empty()) return 0;
     int cnt = 0;
     for(char c : sequence){
         char upper = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
         if(upper == 'G' || upper == 'C') cnt++;
     }
-    return (cnt * 100) / sequence.size();
+    return std::to_string((cnt * 100) / sequence.size()) + "%";
 }
 
 std::size_t chooseWorkerCount(std::size_t task_count) {
@@ -73,7 +73,8 @@ std::vector<SequenceResult> processChunk(
     for (std::size_t index = begin; index < end; ++index) {
         chunk.push_back(SequenceResult{
             records[index],
-            reverse_complementer(records[index].sequence)
+            reverse_complementer(records[index].sequence),
+            percentGC(records[index].sequence)
         });
     }
 
@@ -103,7 +104,7 @@ std::vector<SequenceResult> ParallelSequenceProcessor::process(const std::vector
     for (std::size_t begin = 0; begin < records.size(); begin += chunk_size) {
         const std::size_t end = std::min(begin + chunk_size, records.size());
         tasks.push_back(std::async(std::launch::async, [begin, end, &records, &reverse_complementer] {
-            return processChunk(records, begin, end, reverse_complementer);
+            return processChunk(records, begin, end, reverse_complementer);     
         }));
     }
 

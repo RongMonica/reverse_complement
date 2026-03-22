@@ -11,4 +11,5 @@ struct FastaRecord {
 struct SequenceResult {
     FastaRecord record;
     std::string reverse_complement;
+    std::string gc_content;
 };

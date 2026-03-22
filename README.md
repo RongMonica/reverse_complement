@@ -3,6 +3,7 @@
 Small C++ bioinformatics utility that:
 
 - reads DNA sequences from a FASTA file
+- computes the GC content for each record
 - computes the reverse complement for each record
 - exports the results to a CSV file
 
